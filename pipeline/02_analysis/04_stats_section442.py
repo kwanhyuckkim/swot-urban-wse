@@ -6,13 +6,13 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
-# ─── Load data ───
+# Load data
 DATA_PATH = "/project/pi_kandread_umass_edu/swot-urban/3_analysis_results/swot_urban_nearfar_v6.5_results.parquet"
 df = pd.read_parquet(DATA_PATH)
 df['abs_error_node'] = df['error_node'].abs()
 THRESHOLD = 0.1832
 
-# ─── Flow angle zone classification ───
+# Flow angle zone classification
 def classify_flow_angle(angle):
     a = angle % 180
     if a <= 10 or a >= 170:
@@ -24,7 +24,7 @@ def classify_flow_angle(angle):
 
 df['flow_zone'] = df['flow_angle'].apply(classify_flow_angle)
 
-# ─── ISA bin function (same as plotting code) ───
+# ISA bin function (same as plotting code)
 def get_isa_bin(isa):
     if isa < 5:
         return '0-5'
@@ -43,7 +43,7 @@ def get_isa_bin(isa):
 
 ISA_ORDER = ['0-5', '5-10', '10-20', '20-30', '30-45', '45-60', '60+']
 
-# ─── Building height bin function (same as plotting code) ───
+# Building height bin function (same as plotting code)
 def get_building_bins_dynamic(series, interval=2, min_samples=500, start_from=5):
     bins = [0, start_from]
     current = start_from
@@ -83,13 +83,13 @@ def get_building_bins_dynamic(series, interval=2, min_samples=500, start_from=5)
 
     return result
 
-# ─── Filter to PARALLEL zone (same as Figure 8) ───
+# Filter to PARALLEL zone (same as Figure 8)
 df_par = df[df['flow_zone'] == 'Parallel'].copy()
 print(f"Total samples: {len(df)}")
 print(f"Parallel zone samples: {len(df_par)}")
 print()
 
-# ─── Apply bins ───
+# Apply bins
 df_par['isa_bin'] = df_par['far_isa'].apply(get_isa_bin)
 df_par['bldg_bin'] = get_building_bins_dynamic(df_par['far_building'])
 
@@ -103,12 +103,8 @@ print(f"Building height bins: {BLDG_ORDER}")
 print(f"ISA bins: {ISA_ORDER}")
 print()
 
-# ═══════════════════════════════════════════════════════════
 # 1. BUILDING HEIGHT: Overall 68th percentile per bin
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("1. BUILDING HEIGHT — 68th percentile error per bin (Parallel zone)")
-print("=" * 70)
 for b in BLDG_ORDER:
     subset = df_par[df_par['bldg_bin'] == b]['abs_error_node']
     p68 = subset.quantile(0.68)
@@ -120,12 +116,8 @@ for b in BLDG_ORDER:
           f"IQR=[{p25:.3f}, {p75:.3f}]  exceed>{THRESHOLD}m: {exceed:.1f}%")
 print()
 
-# ═══════════════════════════════════════════════════════════
 # 2. ISA: Overall 68th percentile per bin (Parallel zone)
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("2. ISA — 68th percentile error per bin (Parallel zone)")
-print("=" * 70)
 for isa in ISA_ORDER:
     subset = df_par[df_par['isa_bin'] == isa]['abs_error_node']
     if len(subset) == 0:
@@ -139,18 +131,13 @@ for isa in ISA_ORDER:
           f"IQR=[{p25:.3f}, {p75:.3f}]  exceed>{THRESHOLD}m: {exceed:.1f}%")
 print()
 
-# ═══════════════════════════════════════════════════════════
 # 3. CROSS-TAB: Building height x ISA, 68th percentile
 #    (This is the key Figure 8 top panel data)
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("3. CROSS-TAB: Building Height × ISA — 68th percentile (Parallel)")
-print("=" * 70)
 print(f"{'Bldg\\ISA':>10s}", end="")
 for isa in ISA_ORDER:
     print(f"  {isa:>8s}", end="")
 print("      n_total")
-print("-" * 90)
 
 for b in BLDG_ORDER:
     print(f"{b:>10s}", end="")
@@ -166,15 +153,12 @@ for b in BLDG_ORDER:
     print(f"  {row_n:>8d}")
 print()
 
-# ─── Same table but with sample sizes ───
-print("=" * 70)
+# Same table but with sample sizes
 print("3b. CROSS-TAB: Building Height × ISA — SAMPLE SIZES")
-print("=" * 70)
 print(f"{'Bldg\\ISA':>10s}", end="")
 for isa in ISA_ORDER:
     print(f"  {isa:>8s}", end="")
 print()
-print("-" * 80)
 
 for b in BLDG_ORDER:
     print(f"{b:>10s}", end="")
@@ -184,18 +168,13 @@ for b in BLDG_ORDER:
     print()
 print()
 
-# ═══════════════════════════════════════════════════════════
 # 4. CROSS-TAB: ISA x Building height, 68th percentile
 #    (This is the key Figure 8 bottom panel data)
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("4. CROSS-TAB: ISA × Building Height — 68th percentile (Parallel)")
-print("=" * 70)
 print(f"{'ISA\\Bldg':>10s}", end="")
 for b in BLDG_ORDER:
     print(f"  {b:>8s}", end="")
 print("      n_total")
-print("-" * 90)
 
 for isa in ISA_ORDER:
     print(f"{isa:>10s}", end="")
@@ -211,12 +190,8 @@ for isa in ISA_ORDER:
     print(f"  {row_n:>8d}")
 print()
 
-# ═══════════════════════════════════════════════════════════
-# 5. NON-MONOTONIC ANALYSIS
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
+# 5. Non-monotonic analysis
 print("5. NON-MONOTONIC BUILDING HEIGHT ANALYSIS")
-print("=" * 70)
 
 # Find peak bin and reversal
 bldg_p68 = {}
@@ -226,7 +201,7 @@ for b in BLDG_ORDER:
 
 peak_bin = max(bldg_p68, key=bldg_p68.get)
 peak_val = bldg_p68[peak_bin]
-print(f"  Peak error bin: {peak_bin} → 68th percentile = {peak_val:.3f}m")
+print(f"  Peak error bin: {peak_bin} -> 68th percentile = {peak_val:.3f}m")
 print()
 
 # Compare consecutive bins for reversal
@@ -235,7 +210,7 @@ for i in range(len(BLDG_ORDER) - 1):
     v1, v2 = bldg_p68[b1], bldg_p68[b2]
     direction = "↑" if v2 > v1 else "↓" if v2 < v1 else "="
     pct_change = ((v2 - v1) / v1) * 100
-    print(f"  {b1} → {b2}: {v1:.3f}m → {v2:.3f}m  {direction}  ({pct_change:+.1f}%)")
+    print(f"  {b1} -> {b2}: {v1:.3f}m -> {v2:.3f}m  {direction}  ({pct_change:+.1f}%)")
 
 print()
 
@@ -257,13 +232,9 @@ if last_bin != peak_bin:
     print(f"  KS test ({peak_bin} vs {last_bin}): statistic={ks_stat:.4f}, p-value={ks_p:.2e}")
 print()
 
-# ═══════════════════════════════════════════════════════════
-# 6. MULTIPLICATIVE INTERACTION
+# 6. Multiplicative interaction
 #    Within specific building height bins, how much does ISA matter?
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("6. MULTIPLICATIVE INTERACTION: ISA effect within each height bin")
-print("=" * 70)
 for b in BLDG_ORDER:
     isa_vals = {}
     for isa in ISA_ORDER:
@@ -275,18 +246,14 @@ for b in BLDG_ORDER:
         min_isa = min(isa_vals, key=isa_vals.get)
         max_isa = max(isa_vals, key=isa_vals.get)
         ratio = isa_vals[max_isa] / isa_vals[min_isa] if isa_vals[min_isa] > 0 else float('inf')
-        print(f"  {b:>8s}: lowest ISA={min_isa} ({isa_vals[min_isa]:.3f}m) → "
+        print(f"  {b:>8s}: lowest ISA={min_isa} ({isa_vals[min_isa]:.3f}m) -> "
               f"highest ISA={max_isa} ({isa_vals[max_isa]:.3f}m)  ratio={ratio:.2f}x")
     else:
         print(f"  {b:>8s}: insufficient data")
 print()
 
-# ═══════════════════════════════════════════════════════════
-# 7. SPEARMAN CORRELATIONS
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
+# 7. Spearman correlations
 print("7. SPEARMAN CORRELATIONS (Parallel zone)")
-print("=" * 70)
 
 # Overall: building height vs error
 rho_bldg, p_bldg = stats.spearmanr(df_par['far_building'], df_par['abs_error_node'])
@@ -316,17 +283,12 @@ for isa in ISA_ORDER:
 
 print()
 
-# ═══════════════════════════════════════════════════════════
 # 8. THRESHOLD EXCEEDANCE RATES (cross-tab)
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("8. THRESHOLD EXCEEDANCE RATES (>{:.4f}m) — Building × ISA".format(THRESHOLD))
-print("=" * 70)
 print(f"{'Bldg\\ISA':>10s}", end="")
 for isa in ISA_ORDER:
     print(f"  {isa:>8s}", end="")
 print()
-print("-" * 80)
 
 for b in BLDG_ORDER:
     print(f"{b:>10s}", end="")
@@ -340,12 +302,8 @@ for b in BLDG_ORDER:
     print()
 print()
 
-# ═══════════════════════════════════════════════════════════
 # 9. SUMMARY: Key numbers for the narrative
-# ═══════════════════════════════════════════════════════════
-print("=" * 70)
 print("9. KEY NARRATIVE NUMBERS")
-print("=" * 70)
 
 # Lowest height bin error
 lowest_b = BLDG_ORDER[0]
@@ -373,7 +331,7 @@ if peak_isa_vals:
     min_isa_k = min(peak_isa_vals, key=peak_isa_vals.get)
     max_isa_k = max(peak_isa_vals, key=peak_isa_vals.get)
     print(f"  In peak bin ({peak_bin}), ISA range: {peak_isa_vals[min_isa_k]:.3f}m ({min_isa_k}) "
-          f"→ {peak_isa_vals[max_isa_k]:.3f}m ({max_isa_k}), "
+          f"-> {peak_isa_vals[max_isa_k]:.3f}m ({max_isa_k}), "
           f"ratio={peak_isa_vals[max_isa_k]/peak_isa_vals[min_isa_k]:.2f}x")
 
 print()

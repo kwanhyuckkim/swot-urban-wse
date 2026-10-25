@@ -255,7 +255,7 @@ def run_merge():
     cols = [f"lowcoh_xt{a}_{b}" for a, b in zip(XT_BINS[:-1], XT_BINS[1:])]
     med = d[cols].median()
     if med.notna().sum() > 2:
-        print(f"  → class rate spans {med.min():.1f}% to {med.max():.1f}% across the swath "
+        print(f"  -> class rate spans {med.min():.1f}% to {med.max():.1f}% across the swath "
               f"({med.max() - med.min():.1f} points)")
     print(f"\nsaved {OUT_DIR}/coherence_check.parquet")
 

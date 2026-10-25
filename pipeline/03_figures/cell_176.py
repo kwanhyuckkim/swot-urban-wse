@@ -308,7 +308,7 @@ def plot_parallel_isa_analysis(df, y_col, threshold=0.1832, figsize=(18, 5),
         filename = f"parallel_isa_analysis_{y_col}_log.png"
         filepath = OUTPUT_DIR / filename
         fig.savefig(filepath, dpi=150, facecolor='black', bbox_inches='tight')
-        print(f"✓ Saved: {filepath}")
+        print(f"Saved: {filepath}")
     
     if show:
         plt.show()

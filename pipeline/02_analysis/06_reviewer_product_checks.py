@@ -76,9 +76,7 @@ LAYOVER_SIGNIFICANT_BIT = GEOLOC_QUAL_BITS["layover_significant"]
 LAYOVER_IMPACT_THRESHOLD_M = 5.0  # ATBD discussion of a significant impact
 
 
-# ----------------------------------------------------------------------------
 # Reviewer 3 General 1: catalogued obstructions
-# ----------------------------------------------------------------------------
 def check_sword_obstructions(verbose=True):
     """Compare the study reaches against the full SWORD NA database."""
     import geopandas as gpd
@@ -122,9 +120,7 @@ def check_sword_obstructions(verbose=True):
         "sword_node_nonzero_pct": float((nodes.obstr_type != 0).mean() * 100),
     }
     if verbose:
-        print("=" * 74)
         print("Reviewer 3 General 1: catalogued in-channel obstructions")
-        print("=" * 74)
         print(f"study reaches                 : {res['n_study_reaches']}")
         print(f"  obstr_type                  : {res['study_obstr_counts']}")
         print(f"  grod_id>0 / hfalls_id>0 / p_dam_id>0 : "
@@ -142,9 +138,7 @@ def check_sword_obstructions(verbose=True):
     return res
 
 
-# ----------------------------------------------------------------------------
 # Reviewer 4 overarching, 12, 16: shipped per-pixel layover fields
-# ----------------------------------------------------------------------------
 def _best_versions(files):
     """Keep the newest processor and counter per granule base name."""
     import re
@@ -322,9 +316,7 @@ def run_pixc_check(isa="0.06", cycle="039", verbose=True):
     summary = pd.DataFrame(rows)
 
     if verbose:
-        print("=" * 74)
         print("Reviewer 4 overarching, 12 and 16: shipped per-pixel layover fields")
-        print("=" * 74)
         print(f"site ISA {isa}, cycle {cycle}, granules used: {len(frames)}")
         with pd.option_context("display.width", 200, "display.max_columns", 40):
             print(summary.drop(columns=["bright_land_values"]).to_string(index=False))
@@ -417,9 +409,7 @@ def run_pixc_sweep(threshold=0.1832, max_per_site=6, verbose=True):
     if verbose:
         from scipy import stats as st
         print()
-        print("=" * 74)
         print("PIXC sweep: do the shipped per-pixel indicators track the gauge error?")
-        print("=" * 74)
         print(f"passes analyzed: {len(out)} across {out.isa.nunique()} sites")
         for c in ["bright_land_fire_pct", "layover_significant_pct",
                   "layover_impact_gt5m_pct", "sig0_median"]:
@@ -434,7 +424,6 @@ def run_pixc_sweep(threshold=0.1832, max_per_site=6, verbose=True):
     return out
 
 
-# ----------------------------------------------------------------------------
 # Reviewer 3 General 1 (extended): distance along the network to the nearest
 # catalogued obstruction, traversing SWORD topology upstream and downstream.
 #
@@ -446,7 +435,6 @@ def run_pixc_sweep(threshold=0.1832, max_per_site=6, verbose=True):
 #   dist_out    p.11  distance from the river outlet
 #   reach_len   p.15  reach length along the high-resolution centerline
 #   rch_id_up / rch_id_dn, n_rch_up / n_rch_down  p.16  network topology
-# ----------------------------------------------------------------------------
 OBSTR_LABELS = {0: "none", 1: "dam", 2: "lock", 3: "low permeable dam",
                 4: "waterfall", 5: "undocumented code 5"}
 
@@ -590,9 +578,7 @@ def run_network_check(max_km=200.0, verbose=True):
 
     if verbose:
         print()
-        print("=" * 74)
         print("Distance along the SWORD network to the nearest catalogued obstruction")
-        print("=" * 74)
         n = len(out)
         for d, col in (("upstream", "up_km"), ("downstream", "dn_km")):
             f = out[col].notna()
@@ -649,11 +635,9 @@ def run_network_check(max_km=200.0, verbose=True):
     return out
 
 
-# ----------------------------------------------------------------------------
 # Cross-level test: is there information in the pixel cloud that the river vector
 # product discards? For each pass we ask whether excluding the pixels the product
 # itself flags would move the reach elevation toward the gauge.
-# ----------------------------------------------------------------------------
 
 def _cross_level_one(payload):
     """Process one matched observation. Defined at module level so it can be pickled."""
@@ -782,9 +766,7 @@ def run_cross_level_check(max_per_site=None, threshold=0.1832, workers=1, verbos
 
     if verbose:
         print()
-        print("=" * 74)
         print("Would applying the product's own pixel flags move WSE toward the gauge?")
-        print("=" * 74)
         print(f"passes: {len(out)}, sites: {out.isa.nunique()}")
         print(f"RiverSP bright_land bit set in any pass: "
               f"{int((out.riversp_bright_land_bit == 1).sum())}/{len(out)}")
@@ -813,13 +795,11 @@ def run_cross_level_check(max_per_site=None, threshold=0.1832, workers=1, verbos
     return out
 
 
-# ----------------------------------------------------------------------------
 # Do the shipped indicators predict the error, or do they only track urbanization?
 # Every pixel-level indicator correlates strongly with ISA, so the raw correlation
 # with the error is confounded. Two ways to separate them:
 #   partial Spearman controlling for ISA, and the within-site correlation, where
 #   ISA is constant by construction.
-# ----------------------------------------------------------------------------
 INDICATORS = [
     "bright_land_fire_pct", "pct_bright_land_value1", "pct_bright_land_value2",
     "pct_detected_water_but_bright_land", "pct_detected_water_but_no_prior_water",
@@ -878,9 +858,7 @@ def run_partial_check(verbose=True):
     os.makedirs(OUT_DIR, exist_ok=True)
     out.to_parquet(f"{OUT_DIR}/pixc_partial_correlation.parquet", index=False)
     if verbose:
-        print("=" * 96)
         print("Pixel-level indicators against the gauge error, before and after removing ISA")
-        print("=" * 96)
         print(f"{'indicator':40s} {'n':>4s} {'raw':>7s} {'vs ISA':>8s} "
               f"{'partial':>8s} {'p':>7s} {'within':>8s} {'sites':>6s}")
         for r in out.itertuples(index=False):

@@ -1,6 +1,4 @@
-# =============================================================================
 # FIGURE 3: Quality Flags Heatmap - Error 기반 (X축: ISA %)
-# =============================================================================
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 
 def create_figure3_quality_flags(
@@ -135,9 +133,7 @@ def create_figure3_quality_flags(
                  fontsize=12, fontweight='bold', va='center', ha='right', color='#ca0020',
                  transform=cbar.ax.get_yaxis_transform())
     
-    # =========================================================================
     # X-axis: ISA (%) - 정렬된 샘플 기준으로 tick 위치 계산
-    # =========================================================================
     isa_values = df['isa_pct'].values
     isa_tick_values = [0, 0.5, 1, 2, 4, 6, 10, 20, 30, 40, 50]  # 5% 추가, 60% 제거
     
@@ -175,7 +171,6 @@ def create_figure3_quality_flags(
     # Statistics
     print("\n[Flag Statistics]")
     print(f"{'Flag':<25} {'Count':>8} {'High Error':>12} {'Rate':>8}")
-    print("-" * 55)
     
     for flag_idx, (flag, display) in enumerate(zip(flag_names, flag_display_names)):
         mask = df[flag].values
@@ -185,7 +180,6 @@ def create_figure3_quality_flags(
             print(f"{display:<25} {n_flagged:>8} {int(high_error_rate):>11}% {high_error_rate:>7.1f}%")
     
     overall_rate = (df['error_relative_m'] >= threshold).sum() / len(df) * 100
-    print("-" * 55)
     print(f"{'Overall':<25} {len(df):>8} {int(overall_rate):>11}% {overall_rate:>7.1f}%")
     
     plt.tight_layout()
@@ -193,10 +187,10 @@ def create_figure3_quality_flags(
     # Save
     if save_path:
         fig.savefig(save_path, dpi=dpi, bbox_inches='tight', facecolor='white')
-        print(f"\n✓ Saved: {save_path}")
+        print(f"\nSaved: {save_path}")
         
         pdf_path = save_path.replace('.png', '.pdf')
         fig.savefig(pdf_path, dpi=dpi, bbox_inches='tight', facecolor='white')
-        print(f"✓ Saved: {pdf_path}")
+        print(f"Saved: {pdf_path}")
     
     return fig

@@ -66,7 +66,7 @@ def load_final_df():
     return d
 
 
-# ═══════════════════════════════════════════════════════ Fig 1 (cell 23)
+# Fig 1 (cell 23)
 CLS_COLORS = ['maroon', 'gold', 'skyblue', 'mediumblue', 'dimgray', 'cyan', 'darkturquoise']
 CLS_LABELS = ['Land', 'Land (near water)', 'Water (near land)', 'Open Water',
               'Dark Water', 'Low Coh. (near land)', 'Low Coh. (open)']
@@ -283,7 +283,7 @@ def fig01_orig():
     print("fig01_orig saved")
 
 
-# ═══════════════════════════════════════════════════════ Fig 4 (cell 84)
+# Fig 4 (cell 84)
 def fig04_orig():
     import pyarrow.parquet as pq
     ob = pq.read_table(f"{WORK}/2_urban_reaches/all_final_shape.parquet").to_pandas()
@@ -352,7 +352,7 @@ def fig04_orig():
     print(f"fig04_orig saved (bins n: {ns})")
 
 
-# ═══════════════════════════════════════════════════════ Fig 6 (cell 172)
+# Fig 6 (cell 172)
 def _resolve(vals, mind):
     p = np.array([v[0] for v in vals], float)
     for _ in range(3):
@@ -488,7 +488,7 @@ def fig06_orig(final_df):
                                        for z, s in all_stats.items()})
 
 
-# ═══════════════════════════════════════════════════════ Fig 7 (cell 182)
+# Fig 7 (cell 182)
 def _isa_bin(v):
     for hi, lab in ((5, '0-5'), (10, '5-10'), (20, '10-20'), (30, '20-30'), (40, '30-40'),
                     (50, '40-50'), (60, '50-60'), (70, '60-70'), (80, '70-80')):
@@ -616,7 +616,7 @@ def fig07_orig(final_df):
     print(f"fig07_orig saved (far n={len(far):,} near n={len(nearp):,})")
 
 
-# ═══════════════════════════════════════════════════════ Fig 8 (cell 213)
+# Fig 8 (cell 213)
 def _isa_bin8(v):
     for hi, lab in ((5, '0-5'), (10, '5-10'), (20, '10-20'), (30, '20-30'), (45, '30-45'),
                     (60, '45-60')):
@@ -732,7 +732,7 @@ def _grouped_orig(final_df, isa_col, bld_col, side_label, out_name, expect_n=Non
     g05 = data[data.building_bin == blabels[0]]
     lo = np.percentile(g05[g05.isa_bin == '0-5'].abs_error_node, 68) if len(g05[g05.isa_bin == '0-5']) else np.nan
     hi = np.percentile(g05[g05.isa_bin == '30-45'].abs_error_node, 68) if len(g05[g05.isa_bin == '30-45']) else np.nan
-    print(f"{out_name} saved | 최저높이빈 ISA 0-5→30-45 p68: {lo:.2f}→{hi:.2f}")
+    print(f"{out_name} saved | 최저높이빈 ISA 0-5->30-45 p68: {lo:.2f}->{hi:.2f}")
 
 
 def fig08_orig(final_df):
@@ -747,7 +747,7 @@ def figS3_orig(final_df):
 
 
 
-# ═══════════════════════════════════════════════════════ Fig 3 (money map + schematic)
+# Fig 3 (money map + schematic)
 def _sat_glyph(ax, x, y, scale, angle_deg):
     """작은 위성 글리프(본체+패널 2)."""
     import matplotlib.transforms as mtr

@@ -236,9 +236,7 @@ def merge_chunks_memory_efficient(chunk_dir, output_file, filter_wse=True):
 def print_summary(parquet_file):
     """Print summary statistics of the final dataset."""
     
-    print("\n" + "=" * 70)
     print("Summary")
-    print("=" * 70)
     
     # Read only necessary columns for summary
     df = pd.read_parquet(parquet_file, columns=['node_id', 'time_str', 'wse'])
@@ -259,9 +257,7 @@ def print_summary(parquet_file):
 
 if __name__ == "__main__":
     
-    # ==========================================================================
     # Parse command line argument for continent
-    # ==========================================================================
     ALL_CONTINENTS = ['AF', 'AS', 'EU', 'NA', 'OC', 'SA']
     
     if len(sys.argv) > 1:
@@ -276,13 +272,9 @@ if __name__ == "__main__":
         continents = None  # All continents
         continent_suffix = "_global"
     
-    print("=" * 70)
     print(f"SWOT Hydrocron Node Data Download - {continents or 'ALL'}")
-    print("=" * 70)
     
-    # ==========================================================================
     # Configuration
-    # ==========================================================================
     HYDROCRON_URL = "https://soto.podaac.earthdatacloud.nasa.gov/hydrocron/v1/timeseries"
     COLLECTION_NAME = "SWOT_L2_HR_RiverSP_D"
     START_TIME = "2023-07-27T00:00:00Z"
@@ -296,9 +288,7 @@ if __name__ == "__main__":
     MAX_WORKERS = 100   # Reduced to prevent OOM
     CHUNK_SIZE = 2000  # Reduced to save memory more frequently
     
-    # ==========================================================================
     # Fields (53 valid fields for Node - excludes wse_sm* fields)
-    # ==========================================================================
     all_riversp_node_fields = (
         # Identifiers (5)
         "reach_id,node_id,time,time_tai,time_str,"
@@ -336,9 +326,7 @@ if __name__ == "__main__":
     )
     fields = ",".join([f.strip() for f in all_riversp_node_fields.split(',') if f.strip()])
     
-    # ==========================================================================
     # Step 1: Load SWORD nodes
-    # ==========================================================================
     print("\n[Step 1] Loading SWORD nodes...")
     nodes = load_sword_nodes(SWORD_PATH, continents=continents)
     node_ids = nodes.node_id.drop_duplicates().tolist()
@@ -350,9 +338,7 @@ if __name__ == "__main__":
     del nodes
     gc.collect()
     
-    # ==========================================================================
     # Step 2: Download data with incremental save
-    # ==========================================================================
     print("\n[Step 2] Downloading data...")
     start = time.time()
     
@@ -376,9 +362,7 @@ if __name__ == "__main__":
     del node_ids
     gc.collect()
     
-    # ==========================================================================
     # Step 3: Merge chunks (memory-efficient)
-    # ==========================================================================
     print("\n[Step 3] Merging chunks...")
     start = time.time()
     
@@ -391,9 +375,7 @@ if __name__ == "__main__":
     merge_time = time.time() - start
     print(f"Merge time: {merge_time/60:.1f} minutes")
     
-    # ==========================================================================
     # Step 4: Summary
-    # ==========================================================================
     print_summary(OUTPUT_FILE)
     
     print(f"\nTotal time: {(download_time + merge_time)/60:.1f} minutes")

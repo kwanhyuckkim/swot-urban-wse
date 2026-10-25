@@ -16,9 +16,7 @@ BUILDING_HEIGHT_PATH = str(BASE_PATH / '0_data_collection/3_150m_building/GBH202
 J2000_EPOCH = pd.Timestamp('2000-01-01 00:00:00')
 TARGET_REACH_ID = 74282700231
 
-# =============================================================================
 # Sampling Function
-# =============================================================================
 def sample_raster_along_line(line, node_pt, raster_path, n_samples=100, is_building=False):
     empty_result = {'mean_val': 0.0, 'nonzero_ratio': 0.0, 'dw_mean_val': 0.0, 'dw_ratio': 0.0, 'values': [], 'coords': []}
     
@@ -97,12 +95,8 @@ def sample_raster_along_line(line, node_pt, raster_path, n_samples=100, is_build
     }
 
 
-# =============================================================================
 # 1. 데이터 로드
-# =============================================================================
-print("=" * 70)
 print(f"v6.4 Near/Far ISA 검증 - Reach {TARGET_REACH_ID}")
-print("=" * 70)
 
 # 높은 fctimp 파일들 모두 로드
 print("\n[1] Node 파일 로드...")
@@ -133,9 +127,7 @@ tvp_file = TVP_PATH / f'tvp_reach_{TARGET_REACH_ID}.parquet'
 tvp_df = pd.read_parquet(tvp_file)
 print(f"  TVP rows: {len(tvp_df)}")
 
-# =============================================================================
 # 2. 시간 매칭
-# =============================================================================
 print("\n[4] TVP 매칭...")
 node_df['time_dt'] = pd.to_datetime(node_df['time_str']).dt.tz_localize(None)
 tvp_df['time_dt'] = J2000_EPOCH + pd.to_timedelta(tvp_df['time'], unit='s')
@@ -155,13 +147,11 @@ matched = merged_df['sat_lon'].notna().sum()
 print(f"  TVP 매칭: {matched}/{len(merged_df)} ({100*matched/len(merged_df):.1f}%)")
 
 if matched == 0:
-    print("\n  ⚠️ 매칭 안됨! 시간 범위 확인:")
+    print("\n  매칭 안됨! 시간 범위 확인:")
     print(f"    Node: {node_df['time_dt'].min()} ~ {node_df['time_dt'].max()}")
     print(f"    TVP:  {tvp_df['time_dt'].min()} ~ {tvp_df['time_dt'].max()}")
 else:
-    # =============================================================================
     # 3. Near/Far ISA 계산
-    # =============================================================================
     print("\n[5] Near/Far ISA 계산...")
     
     test_row = merged_df[merged_df['sat_lon'].notna()].iloc[0]
@@ -210,9 +200,7 @@ else:
         vals = [v for _, v in far_isa['values'][:10]]
         print(f"    처음 10개 값: {vals}")
     
-    # =============================================================================
     # 4. 시각화
-    # =============================================================================
     print("\n[6] 시각화...")
     
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
@@ -280,14 +268,12 @@ else:
     plt.show()
     
     # 결론
-    print("\n" + "=" * 70)
     print("검증 결과")
-    print("=" * 70)
     print(f"  fctimp_mean (원본): {test_row['fctimp_mean']:.1%}")
     print(f"  Near ISA: {near_isa['mean_val']:.2f} (dw: {near_isa['dw_mean_val']:.2f})")
     print(f"  Far ISA:  {far_isa['mean_val']:.2f} (dw: {far_isa['dw_mean_val']:.2f})")
     
     if near_isa['mean_val'] > 0 or far_isa['mean_val'] > 0:
-        print("\n✅ ISA 값이 정상적으로 계산됨!")
+        print("\nISA 값이 정상적으로 계산됨!")
     else:
-        print("\n⚠️ ISA 값이 0 - 확인 필요")
+        print("\nISA 값이 0 - 확인 필요")

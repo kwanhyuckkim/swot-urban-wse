@@ -6,7 +6,7 @@ Kim, K.-H., Gleason, C. J., Andreadis, K. M., & Bennitt, F. B. Geometric Control
 
 I matched SWOT river node WSE with USGS gauges on urban reaches and looked at how the error changes with where the river sits in the swath (near or far from nadir), with the impervious surface and buildings next to it, and with the angle between the river and the satellite track.
 
-## What's here
+## Layout
 
 The code is split by step:
 
@@ -16,7 +16,7 @@ The code is split by step:
 
 The notebooks have their outputs cleared, and the data and result files are not in the repo.
 
-## Running it
+## Setup
 
 ```bash
 conda env create -f environment.yml

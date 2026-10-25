@@ -42,7 +42,7 @@ def strata(df, structure_col, bridge_col):
             (df[structure_col] > 1) & (df[bridge_col] > 100)]
 
 
-# ───────────────────────── inputs shared by both scales
+# inputs shared by both scales
 net = pd.read_parquet(f"{RC}/obstruction_network_distance.parquet",
                       columns=["reach_id", "nearest_km"])
 net["reach_id"] = net.reach_id.astype("int64")
@@ -53,16 +53,14 @@ br["reach_id"] = br.reach_id.astype("int64")
 
 rows = []
 
-# ───────────────────────── scale 1: PIXC layover_impact, 166 gauge-verified passes
+# scale 1: PIXC layover_impact, 166 gauge-verified passes
 c = pd.read_parquet(f"{RC}/cross_level_pixc_vs_riversp.parquet")
 c["reach_id"] = c.reach_id.astype("int64")
 c["isa_pct"] = c.isa * 100 if c.isa.max() <= 1.5 else c.isa
 c = c.merge(net, on="reach_id", how="left").merge(br, on="reach_id", how="left")
 c["nearest_km"] = c.nearest_km.fillna(1e9)
 c["bridge_dist_m"] = c.bridge_dist_m.fillna(1e9)
-print("=" * 78)
 print("SCALE 1  PIXC layover_impact  (per-pass medians, gauge-verified)")
-print("=" * 78)
 for name, g in strata(c, "nearest_km", "bridge_dist_m"):
     r1, p1, n1 = rho(g.layover_impact_median_m, g.abs_error_m)
     r2, p2, _ = rho(g.layover_impact_median_m, g.isa_pct)
@@ -73,7 +71,7 @@ for name, g in strata(c, "nearest_km", "bridge_dist_m"):
     print(f"  {name:46s} n={n1:4d} | vs error {r1:+.3f} (p={p1:.2f}) "
           f"| vs ISA {r2:+.3f} | bright flag vs ISA {r3:+.3f}")
 
-# ───────────────────────── scale 2: RiverSP layovr_val, reach medians, 409 reaches
+# scale 2: RiverSP layovr_val, reach medians, 409 reaches
 r_ = pd.read_parquet(f"{RC}/layovr_val_reach.parquet",
                      columns=["reach_id", "layovr_val", "wse_u", "wse_r_u"])
 for col in ("layovr_val", "wse_u", "wse_r_u"):
@@ -92,9 +90,7 @@ d = er.merge(lv, on="reach_id", how="inner").merge(net, on="reach_id", how="left
 d["nearest_km"] = d.nearest_km.fillna(1e9)
 d["bridge_dist_m"] = d.bridge_dist_m.fillna(1e9)
 print()
-print("=" * 78)
 print("SCALE 2  RiverSP layovr_val  (reach medians, 409 reaches)")
-print("=" * 78)
 for name, g in strata(d, "nearest_km", "bridge_dist_m"):
     r1, p1, n1 = rho(g.layovr_val, g.med_err)
     r2, p2, _ = rho(g.layovr_val, g.isa_pct)

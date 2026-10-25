@@ -10,10 +10,8 @@
 #SBATCH -e swot-node5-%A_%a.err
 #SBATCH --array=0-5
 
-# ==========================================================================
 # SWOT Hydrocron Node Download - Parallel by Continent
 # Submit: sbatch submit_node_download.sh
-# ==========================================================================
 
 echo "=========================================="
 echo "Job started: $(date)"

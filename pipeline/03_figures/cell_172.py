@@ -119,9 +119,7 @@ def plot_cdf_single(ax, data, y_col, geom_col, geometry_categories, title, thres
     ax.text(threshold, 1.01, f'T={threshold}m', transform=ax.get_xaxis_transform(),
             color='black', fontsize=11, fontweight='bold', ha='center', va='bottom')
 
-    # -------------------------------------------------------------------------
     # 스마트 라벨 배치 (선 없음, 축 밀착, 겹침 방지)
-    # -------------------------------------------------------------------------
     
     # 1. X축 라벨 (68%tile Error)
     # 정렬
@@ -269,7 +267,7 @@ def plot_cdf_2x2(df, y_col, geom_col='geometry_category', threshold=0.1832,
         fig.savefig(OUTPUT_DIR / filename, dpi=300, facecolor='white', bbox_inches='tight')
         filename = f"figure5_cdf_2x2_{y_col}_{geom_col}.pdf"
         fig.savefig(OUTPUT_DIR / filename, dpi=300, facecolor='white', bbox_inches='tight')
-        print(f"✓ Saved: {OUTPUT_DIR / filename}")
+        print(f"Saved: {OUTPUT_DIR / filename}")
     
     if show:
         plt.show()

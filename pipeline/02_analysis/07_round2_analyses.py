@@ -344,9 +344,7 @@ if __name__ == "__main__":
     fns = {"pops": run_pops, "cv": run_cv, "boot": run_boot, "sens": run_sens,
            "width": run_width, "flags": run_flags, "huc": run_huc}
     for name in (fns if a.task == "all" else [a.task]):
-        print("=" * 78)
         print(name.upper())
-        print("=" * 78)
         try:
             fns[name]()
         except Exception as e:

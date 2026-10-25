@@ -72,7 +72,7 @@ def main():
     baselines = {n: np.quantile(abs_err[CAT[n]], 0.68) for n in CAT_ORDER}
     print(f"total n={n_total:,}  p68={p68_total:.4f}")
 
-    # ── (a) flow-angle sweep, 원본 2° 그리드 ──
+    # (a) flow-angle sweep, 원본 2° 그리드
     angle_thresholds = np.arange(1, 32, 2)
     results_angle = {n: [] for n in CAT_ORDER}
     for at in angle_thresholds:
@@ -88,7 +88,7 @@ def main():
     OPT_A = 13.0
     opt_idx_a = int(np.where(angle_thresholds == 13)[0][0])
 
-    # ── (b) building-height sweep ──
+    # (b) building-height sweep
     is_par_bldg = (flow_par < OPT_A) & (far_bldg >= 0)
     n_sub_b = int(is_par_bldg.sum())
     p68_sub_b = np.quantile(abs_err[is_par_bldg], 0.68)
@@ -111,7 +111,7 @@ def main():
     print(f"(b) subset n={n_sub_b:,} p68={p68_sub_b:.4f}  θ*={res_b[oib]['threshold']}m"
           f"  red={res_b[oib]['red_sub']:.1f}% rm={res_b[oib]['rm_sub']:.1f}%")
 
-    # ── (c) ISA sweep ──
+    # (c) ISA sweep
     is_par_isa = (flow_par < OPT_A) & (far_isa >= 0)   # 2026-10-03: all parallel, zeros included
     n_sub_c = int(is_par_isa.sum())
     p68_sub_c = np.quantile(abs_err[is_par_isa], 0.68)
@@ -143,7 +143,7 @@ def main():
 
     fig, axes = plt.subplots(2, 2, figsize=(7.16, 7.5))
 
-    # ═══ (a) ═══
+    # (a)
     ax = axes[0][0]
     xa = [r["threshold"] for r in results_angle["All"]]
     ax.axvspan(5, 19, color="#1f4e9c", alpha=0.08, zorder=1)
@@ -203,7 +203,7 @@ def main():
               borderpad=0.35, handlelength=1.3, labelspacing=0.35,
               columnspacing=0.7, handletextpad=0.4)
 
-    # ═══ (b)/(c) 공통 ═══
+    # (b)/(c) 공통
     def panel_bc(ax, res, opt_i, n_sub, p68_sub, span, xlab, title, unit, leg):
         xs = [r["threshold"] for r in res]
         ax.axvspan(*span, color="#1f4e9c", alpha=0.08, zorder=1)
@@ -262,7 +262,7 @@ def main():
              "(c) ISA Masking (Parallel < 13°)", "%",
              dict(loc="lower right", bbox_to_anchor=(0.985, 0.03)))
 
-    # ═══ (d) 검증 ═══
+    # (d) 검증
     axd = axes[1][1]
     boot = pd.read_csv(f"{R2}/threshold_bootstrap_faithful.csv")
     axd.hist(boot.reduction_pct, bins=24, color="#9ecae1", edgecolor="white",

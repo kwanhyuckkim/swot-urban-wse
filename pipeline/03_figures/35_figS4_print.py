@@ -30,7 +30,7 @@ fig, (axa, axb) = plt.subplots(1, 2, figsize=(7.16, 3.5),
                                                 wspace=0.28))
 fig.subplots_adjust(left=0.075, right=0.90, top=0.92, bottom=0.20)
 
-# ═══ (a) 존 구성 적층바 ═══
+# (a) 존 구성 적층바
 SHORT = {"Lower Colorado": "Low. Colo.",
          "Upper Colorado": "Up. Colo.", "Lower Mississippi": "Low. Miss.", "Upper Mississippi": "Up. Miss.",
          "New England": "New Eng.", "Great Lakes": "Gr. Lakes",
@@ -59,7 +59,7 @@ axa.text(0.98, 0.50, "remainder of each region is the Neither zone;\n"
          "regions ordered by exposure \N{RIGHTWARDS ARROW}",
          transform=axa.transAxes, ha="right", fontsize=5.8, color="0.4")
 
-# ═══ (b) 노출 vs 감소 ═══
+# (b) 노출 vs 감소
 resp = g.response_p68_ratio
 ok = resp.notna()
 sc = axb.scatter(g[ok].exposure_flagged_pct, g[ok].reduction_pct,

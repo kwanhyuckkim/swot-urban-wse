@@ -34,7 +34,7 @@ def p68(x):
     return float(np.nanpercentile(x, 68)) if len(x) else np.nan
 
 
-# ══════════════════════════ Part 1: stratified geometry
+# Part 1: stratified geometry
 def part1():
     d = pq.read_table(NODES, columns=["reach_id", "flow_angle", "far_isa", "far_building",
                                       "error_node", "sample_geometry_category"]).to_pandas()
@@ -83,13 +83,12 @@ def part1():
         rows.append(r)
     out = pd.DataFrame(rows)
     out.to_csv(f"{OUT}/structure_stratified.csv", index=False)
-    print("═" * 70)
     print("PART 1: geometry stratified by structure proximity")
     print(out.round(3).to_string(index=False))
     return out
 
 
-# ══════════════════════════ Part 2: bridges (NBI)
+# Part 2: bridges (NBI)
 STATES = ("AL AR AZ CA CO CT DC DE FL GA IA ID IL IN KS KY LA MA MD ME MI MN MO MS "
           "MT NC ND NE NH NJ NM NV NY OH OK OR PA RI SC SD TN TX UT VA VT WA WI WV WY").split()
 
@@ -170,7 +169,6 @@ def gauge_coords():
 
 
 def part2():
-    print("═" * 70)
     print("PART 2: bridges (FHWA NBI 2024, waterway-crossing structures)")
     nbi = fetch_nbi()
     print(f"  NBI bridges over waterways: {len(nbi):,}")

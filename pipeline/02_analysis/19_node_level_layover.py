@@ -41,7 +41,7 @@ def rho(a, b, lab, extra=""):
     return r
 
 
-# ───────────────────────────────── 1. join
+# 1. join
 d = pq.read_table(NODES, columns=["reach_id", "node_id", "time_str", "lat", "lon",
                                   "flow_angle", "far_isa", "far_building",
                                   "error_node", "width_node"]).to_pandas()
@@ -85,7 +85,7 @@ net["reach_id"] = net.reach_id.astype("int64")
 m = m.merge(net, on="reach_id", how="left")
 m["nearest_km"] = m.nearest_km.fillna(1e9)
 
-# ───────────────────────────────── 2. layovr_val against node error
+# 2. layovr_val against node error
 print("\n[2] node layovr_val against node |error|")
 rho(m.layovr_val, m.e, "all node observations")
 rho(m.layovr_val, m.sys_u, "  against the reported systematic uncertainty")
@@ -106,7 +106,7 @@ for lab, g in strata:
     r = rho(g.layovr_val, g.e, f"  {lab}")
     rows.append({"stratum": lab, "n": len(g), "rho": r})
 
-# ───────────────────────────────── 3. node quality bits
+# 3. node quality bits
 print("\n[3] node_q_b bits at node scale, and whether they mark the bad nodes")
 q = m.node_q_b.fillna(0).astype("int64")
 T = 0.1832
@@ -133,7 +133,7 @@ bl_reach = int(((ob.reach_q_b.astype("int64") & 128) > 0).sum())
 print(f"    node_q_b  bit 7 set in {bl_node:,} of {len(m):,} node observations")
 print(f"    reach_q_b bit 7 set in {bl_reach:,} of {len(ob):,} reach observations")
 
-# ───────────────────────────────── 4. incremental value over our geometry
+# 4. incremental value over our geometry
 print("\n[4] does layovr_val add anything once the geometry is known")
 sub = m[(m.ang <= 13) & m.layovr_val.notna()].copy()
 if len(sub) > 1000:

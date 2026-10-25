@@ -29,9 +29,7 @@ import gc
 import warnings
 warnings.filterwarnings('ignore')
 
-# =============================================================================
 # Configuration
-# =============================================================================
 BASE_PATH = Path('/work/pi_kandread_umass_edu/swot-urban')
 PARQUET_PATH = BASE_PATH / '5_fctimp'
 TVP_PATH = BASE_PATH / '6_pixc_tvp' / 'SWOT_TVP_Data'
@@ -50,9 +48,7 @@ J2000_EPOCH = pd.Timestamp('2000-01-01 00:00:00')
 N_WORKERS = int(os.environ.get('SLURM_CPUS_PER_TASK', 48))
 
 
-# =============================================================================
 # Global Worker State (Initialize once per worker)
-# =============================================================================
 src_isa = None
 src_bld = None
 
@@ -75,9 +71,7 @@ def init_worker(isa_path, bld_path):
         src_bld = None
 
 
-# =============================================================================
 # Sampling Functions (Optimized)
-# =============================================================================
 def sample_raster_along_line_optimized(line, node_pt, dataset_type='isa', n_samples=100, valid_range=(0, 100)):
     """Optimized sampling using src.sample() instead of repeated read()"""
     empty_result = {
@@ -292,9 +286,7 @@ def process_single_task(task):
     return result
 
 
-# =============================================================================
 # Process Single Reach
-# =============================================================================
 def process_single_reach(reach_id, node_files_list, tvp_file, polygon_wkt, temp_dir):
     """Process a single reach with optimized parallel workers."""
     out_file = temp_dir / f'reach_{reach_id}.parquet'
@@ -398,28 +390,22 @@ def process_single_reach(reach_id, node_files_list, tvp_file, polygon_wkt, temp_
         return None
 
 
-# =============================================================================
 # Main Pipeline
-# =============================================================================
 def run_pipeline():
     """Run per-reach pipeline with optimized workers."""
     
     OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
     TEMP_PATH.mkdir(parents=True, exist_ok=True)
     
-    print("=" * 70)
     print("SWOT urban near/far pipeline v6.5")
     print(f"  Workers per reach: {N_WORKERS}")
     print(f"  Rasterio I/O: Global worker state (open once per worker)")
     print(f"  TVP time: J2000 epoch (2000-01-01 00:00:00)")
     print(f"  Output: {OUTPUT_PATH}")
-    print("=" * 70)
     
     total_start = time.time()
     
-    # ==========================================================================
     # PHASE 1: Build lookup tables
-    # ==========================================================================
     print("\n[PHASE 1] Building lookup tables...")
     
     # Load polygons -> dict
@@ -471,9 +457,7 @@ def run_pipeline():
     
     print(f"    {len(tvp_file_dict)} TVP files")
     
-    # ==========================================================================
     # PHASE 2: Process each reach
-    # ==========================================================================
     valid_reaches = set(polygon_wkt_dict.keys()) & set(node_file_dict.keys())
     valid_reaches = sorted(valid_reaches)
     
@@ -505,9 +489,7 @@ def run_pipeline():
         
         gc.collect()
     
-    # ==========================================================================
     # PHASE 3: Merge all results
-    # ==========================================================================
     print(f"\n[PHASE 3] Merging {len(processed_files)} reach files...")
     
     all_dfs = []
@@ -530,12 +512,8 @@ def run_pipeline():
         # Keep temp files for debugging
         print(f"  Temp files kept at: {TEMP_PATH}")
         
-        # ==========================================================================
         # Summary
-        # ==========================================================================
-        print("\n" + "=" * 70)
         print("SUMMARY")
-        print("=" * 70)
         print(f"Total rows: {len(final_df)}")
         print(f"Total reaches: {len(valid_reaches)}")
         print(f"Total time: {(time.time()-total_start)/60:.1f} minutes")
@@ -581,9 +559,7 @@ def run_pipeline():
         return None
 
 
-# =============================================================================
 # Entry Point
-# =============================================================================
 if __name__ == '__main__':
     mp.set_start_method('fork', force=True)
     run_pipeline()

@@ -115,7 +115,7 @@ def main():
                           wspace=0.10, left=0.068, right=0.99, top=0.945,
                           bottom=0.085)
 
-    # ── 1행: 각도: (a) Far∪Both 결정 패널, (b) Near, (c) Neither 대조 ──
+    # 1행: 각도: (a) Far∪Both 결정 패널, (b) Near, (c) Neither 대조
     groups = [("Far-side urban (Far ∪ Both)", df.zone.isin(["Far", "Both"])),
               ("Near only", df.zone == "Near"),
               ("Neither (control)", df.zone == "Neither")]
@@ -145,7 +145,7 @@ def main():
     fig.text(0.53, 0.520, "Flow-angle deviation from track (\N{DEGREE SIGN}), "
              "2\N{DEGREE SIGN} bins", ha="center", fontsize=7.0)
 
-    # ── 2행: 높이·ISA (parallel<13°) ──
+    # 2행: 높이·ISA (parallel<13°)
     axb = fig.add_subplot(gs[1, 0:3])
     b = df[(df.angle_dev < 13) & (df.far_building >= 0)]
     cent, p68b, medb, nsb = panel(

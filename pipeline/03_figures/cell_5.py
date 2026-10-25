@@ -228,4 +228,4 @@ ax.legend(handles=legend_elements, loc='lower center', fontsize=14, bbox_to_anch
 
 plt.savefig('figures/money_figure_with_paths.png', dpi=600, bbox_inches='tight')
 plt.show()
-print("✓ Saved: figures/money_figure_with_paths.png")
+print("Saved: figures/money_figure_with_paths.png")

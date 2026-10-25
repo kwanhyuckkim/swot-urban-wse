@@ -71,7 +71,7 @@ def load_nodes(extra=()):
     return d.dropna(subset=["e"])
 
 
-# ══════════════════════════════════ fig03
+# fig03
 def fig03():
     from shapely.geometry import LineString
     d = load_nodes(extra=("node_id", "lat", "lon", "sat_lat", "sat_lon"))
@@ -166,7 +166,7 @@ def fig03():
     save(fig, "fig03_zone_flip")
 
 
-# ══════════════════════════════════ fig04
+# fig04
 def fig04():
     ob = pq.read_table(OBS, columns=["reach_id", "wse_relative_m",
                                      "wse_usgs_relative_m"]).to_pandas()
@@ -211,7 +211,7 @@ def fig04():
     save(fig, "fig04_isa_categories")
 
 
-# ══════════════════════════════════ fig05
+# fig05
 def fig05():
     ob = pq.read_table(OBS, columns=["reach_id", "time_str", "reach_q_b",
                                      "wse_relative_m", "wse_usgs_relative_m"]).to_pandas()
@@ -268,7 +268,7 @@ def fig05():
     save(fig, "fig05_flags_screen")
 
 
-# ══════════════════════════════════ fig06
+# fig06
 def fig06():
     d = load_nodes()
     gc = d.sample_geometry_category.astype(str).str.lower()
@@ -323,7 +323,7 @@ def fig06():
     save(fig, "fig06_cdf_2x2")
 
 
-# ══════════════════════════════════ fig07
+# fig07
 def fig07():
     d = load_nodes()
     par = d[d.angle_dev <= 10]
@@ -374,7 +374,7 @@ def fig07():
     save(fig, "fig07_parallel_2x2")
 
 
-# ══════════════════════════════════ fig08 / figS3 shared
+# fig08 / figS3 shared
 def grouped_panel(par, side, cmap, name):
     hb = [0, 5, 7, 9, 11, 13, 100]
     hl = ["0-5", "5-7", "7-9", "9-11", "11-13", ">13"]
@@ -458,7 +458,7 @@ def figS3():
     grouped_panel(par, "near", plt.cm.Greens, "figS3_near_grouped")
 
 
-# ══════════════════════════════════ fig09
+# fig09
 def fig09():
     d = load_nodes()
     gc = d.sample_geometry_category.astype(str).str.lower()
@@ -562,7 +562,7 @@ def fig09():
     save(fig, "fig09_mask_2x2")
 
 
-# ══════════════════════════════════ figS1
+# figS1
 def figS1():
     d = load_nodes()
     gc = d.sample_geometry_category.astype(str).str.lower()

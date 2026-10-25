@@ -219,9 +219,7 @@ def merge_chunks_memory_efficient(chunk_dir, output_file, filter_wse=True):
 def print_summary(parquet_file):
     """Print summary statistics of the final dataset."""
     
-    print("\n" + "=" * 70)
     print("Summary")
-    print("=" * 70)
     
     # Read only necessary columns for summary
     df = pd.read_parquet(parquet_file, columns=['reach_id', 'time_str', 'wse'])
@@ -242,13 +240,9 @@ def print_summary(parquet_file):
 
 if __name__ == "__main__":
     
-    print("=" * 70)
     print("SWOT Hydrocron Data Download (Memory-Efficient)")
-    print("=" * 70)
     
-    # ==========================================================================
     # Configuration
-    # ==========================================================================
     HYDROCRON_URL = "https://soto.podaac.earthdatacloud.nasa.gov/hydrocron/v1/timeseries"
     COLLECTION_NAME = "SWOT_L2_HR_RiverSP_D"
     START_TIME = "2023-07-27T00:00:00Z"
@@ -261,9 +255,7 @@ if __name__ == "__main__":
     MAX_WORKERS = 100
     CHUNK_SIZE = 5000  # Save every 5000 successful reaches
     
-    # ==========================================================================
     # Fields
-    # ==========================================================================
     all_riversp_fields = (
         "reach_id,time,time_tai,time_str,cycle_id,pass_id,"
         "p_lat,p_lon,river_name,"
@@ -298,9 +290,7 @@ if __name__ == "__main__":
     )
     fields = ",".join([f.strip() for f in all_riversp_fields.split(',') if f.strip()])
     
-    # ==========================================================================
     # Step 1: Load SWORD reaches
-    # ==========================================================================
     print("\n[Step 1] Loading SWORD reaches...")
     reaches = load_sword_reaches(SWORD_PATH)
     reach_ids = reaches.reach_id.drop_duplicates().tolist()
@@ -312,9 +302,7 @@ if __name__ == "__main__":
     del reaches
     gc.collect()
     
-    # ==========================================================================
     # Step 2: Download data with incremental save
-    # ==========================================================================
     print("\n[Step 2] Downloading data...")
     start = time.time()
     
@@ -337,9 +325,7 @@ if __name__ == "__main__":
     del reach_ids
     gc.collect()
     
-    # ==========================================================================
     # Step 3: Merge chunks (memory-efficient)
-    # ==========================================================================
     print("\n[Step 3] Merging chunks...")
     start = time.time()
     
@@ -352,9 +338,7 @@ if __name__ == "__main__":
     merge_time = time.time() - start
     print(f"Merge time: {merge_time/60:.1f} minutes")
     
-    # ==========================================================================
     # Step 4: Summary
-    # ==========================================================================
     print_summary(OUTPUT_FILE)
     
     print(f"\nTotal time: {(download_time + merge_time)/60:.1f} minutes")

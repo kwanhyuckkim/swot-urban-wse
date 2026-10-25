@@ -10,9 +10,7 @@ import seaborn as sns
 import warnings
 warnings.filterwarnings('ignore')
 
-# =============================================================================
 # FIGURE 2: Boxplot - ISA Bins vs Error (Revised)
-# =============================================================================
 def create_figure2_isa_vs_error(
     df_matched,
     threshold=0.1832,
@@ -130,9 +128,7 @@ def create_figure2_isa_vs_error(
     ax.axhline(threshold_plot, color='black', linestyle='--', linewidth=3,
                alpha=0.9, label=f'Target Error ({threshold:.4f} m)')
     
-    # =========================================================================
     # Scale 설정
-    # =========================================================================
     if use_log_scale:
         ax.set_yscale('log')
         ax.set_ylim(offset * 0.9, ylim_max + offset)
@@ -210,10 +206,10 @@ def create_figure2_isa_vs_error(
     
     if save_path:
         fig.savefig(save_path, dpi=dpi, bbox_inches='tight', facecolor='white')
-        print(f"✓ Saved: {save_path}")
+        print(f"Saved: {save_path}")
         
         pdf_path = save_path.replace('.png', '.pdf')
         fig.savefig(pdf_path, dpi=dpi, bbox_inches='tight', facecolor='white')
-        print(f"✓ Saved: {pdf_path}")
+        print(f"Saved: {pdf_path}")
     
     return fig

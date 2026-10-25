@@ -18,9 +18,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.transforms import blended_transform_factory
 
-# ═══════════════════════════════════════════════════════════════
 # Publication style
-# ═══════════════════════════════════════════════════════════════
 plt.rcParams.update({
     'font.family': 'serif',
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
@@ -40,9 +38,7 @@ plt.rcParams.update({
     'axes.facecolor': 'white',
 })
 
-# ═══════════════════════════════════════════════════════════════
 # Data loading
-# ═══════════════════════════════════════════════════════════════
 DATA_PATH = "/project/pi_kandread_umass_edu/swot-urban/3_analysis_results/swot_urban_nearfar_v6.5_results.parquet"
 COLS_NEEDED = ['flow_angle', 'far_building', 'far_isa', 'error_node',
                'near_isa', 'near_ratio', 'far_ratio']
@@ -59,7 +55,7 @@ if df['far_isa'].max() <= 1.0:
 else:
     df['far_isa_pct'] = df['far_isa']
 
-# ─── Geometry categorisation (mutually exclusive) ───
+# Geometry categorisation (mutually exclusive)
 has_far  = (df['far_isa'].fillna(0) > 0) & (df['far_ratio'].fillna(0) >= MIN_RATIO)
 has_near = (df['near_isa'].fillna(0) > 0) & (df['near_ratio'].fillna(0) >= MIN_RATIO)
 
@@ -102,12 +98,8 @@ for name in CAT_ORDER:
     print(f"  {name:<10s}: {n:>9,} ({n/n_total*100:>5.1f}%)  68th %ile = {p:.4f} m")
 print()
 
-# ═══════════════════════════════════════════════════════════════
-# 1. FLOW ANGLE SWEEP
-# ═══════════════════════════════════════════════════════════════
-print("=" * 80)
+# 1. Flow angle sweep
 print("1. FLOW ANGLE SWEEP")
-print("=" * 80)
 
 angle_thresholds = np.arange(1, 32, 2)
 results_angle = {name: [] for name in CAT_ORDER}
@@ -135,7 +127,7 @@ for angle_t in angle_thresholds:
 
 print()
 
-# ─── Optimal angle threshold (needed for sections 2 & 3) ───
+# Optimal angle threshold (needed for sections 2 & 3)
 slopes_a = []
 for i in range(len(angle_thresholds) - 1):
     dx = float(angle_thresholds[i+1] - angle_thresholds[i])
@@ -146,14 +138,10 @@ opt_step_a = int(np.argmax(slopes_a))
 opt_idx_a  = opt_step_a + 1          # 뒤에점
 opt_thresh_a = float(angle_thresholds[opt_idx_a])
 print(f">>> Optimal angle threshold: {opt_thresh_a:.0f}°  "
-      f"(max slope sum at {angle_thresholds[opt_step_a]:.0f}°→{opt_thresh_a:.0f}°)\n")
+      f"(max slope sum at {angle_thresholds[opt_step_a]:.0f}°->{opt_thresh_a:.0f}°)\n")
 
-# ═══════════════════════════════════════════════════════════════
 # 2. BUILDING HEIGHT SWEEP (parallel < opt_angle, far_bldg >= 5 m)
-# ═══════════════════════════════════════════════════════════════
-print("=" * 80)
 print(f"2. BUILDING HEIGHT SWEEP  (parallel < {opt_thresh_a:.0f}°, bldg ≥ 5 m)")
-print("=" * 80)
 
 has_valid_bldg = far_bldg >= 0
 is_par_bldg    = (flow_par < opt_thresh_a) & has_valid_bldg
@@ -186,12 +174,8 @@ for h_t in bldg_thresholds:
 
 print()
 
-# ═══════════════════════════════════════════════════════════════
 # 3. ISA SWEEP (parallel < opt_angle, far_isa > 0)
-# ═══════════════════════════════════════════════════════════════
-print("=" * 80)
 print(f"3. FAR ISA SWEEP  (parallel < {opt_thresh_a:.0f}°, ISA > 0)")
-print("=" * 80)
 
 has_valid_isa = far_isa > 0
 is_par_isa    = (flow_par < opt_thresh_a) & has_valid_isa
@@ -224,12 +208,8 @@ for isa_t in isa_thresholds:
 
 print()
 
-# ═══════════════════════════════════════════════════════════════
-# 4. COMBINED MASKS
-# ═══════════════════════════════════════════════════════════════
-print("=" * 80)
+# 4. Combined masks
 print("4. COMBINED MASKS")
-print("=" * 80)
 
 combos = [
     ("No masking",           np.zeros(n_total, dtype=bool)),
@@ -243,19 +223,14 @@ combos = [
 ]
 
 print(f"\n{'Mask':<28s} {'Removed':>8s} {'%Tot':>7s} {'68th%ile':>9s} {'Red%':>7s}")
-print("-" * 65)
 for label, mask in combos:
     n_rm = mask.sum()
     p68r = np.quantile(abs_err[~mask], 0.68)
     red  = (p68_total - p68r) / p68_total * 100
     print(f"{label:<28s} {n_rm:>8,d} {n_rm/n_total*100:>6.2f}% {p68r:>9.4f} {red:>+6.2f}%")
 
-# ═══════════════════════════════════════════════════════════════
 # OPTIMAL THRESHOLDS (b, c)
-# ═══════════════════════════════════════════════════════════════
-print("\n" + "=" * 80)
 print("OPTIMAL THRESHOLDS")
-print("=" * 80)
 print(f"  (a) Flow angle : {opt_thresh_a:.0f}°")
 
 # (b) Knee point: normalize red_sub & rm_sub to [0,1], find max(red_norm - rm_norm)
@@ -283,18 +258,14 @@ print(f"  (c) ISA        : {opt_thresh_c:.0f}%  (knee score={knee_c[opt_idx_c]:.
       f"red_sub={results_isa[opt_idx_c]['red_sub']:.1f}% / "
       f"rm_sub={results_isa[opt_idx_c]['rm_sub']:.1f}%)")
 
-# ═══════════════════════════════════════════════════════════════
-# PLOTTING
-# ═══════════════════════════════════════════════════════════════
+# Plotting
 print("\nMaking plots ...")
 
 ANNO_FS = 13  # match tick label size
 
 fig, axes = plt.subplots(1, 3, figsize=(19, 6.5))
 
-# ──────────────────────────────────────────────────────────────
 # (a) Flow Angle
-# ──────────────────────────────────────────────────────────────
 ax = axes[0]
 xa = [r['threshold'] for r in results_angle['All']]
 
@@ -347,9 +318,7 @@ ax.legend(lines1 + lines2, labs1 + labs2,
           loc='upper left', fontsize=14, ncol=1,
           framealpha=0.9, edgecolor='gray')
 
-# ──────────────────────────────────────────────────────────────
 # Helper: annotate optimal on (b)/(c)
-# ──────────────────────────────────────────────────────────────
 def annotate_bc(ax_main, ax_right, opt_x, r, panel_label, p68_sub, p68_tot):
     """Draw vertical line, θ* label inside plot, and annotate intersections."""
     ax_main.axvline(x=opt_x, color='#444444', linestyle='--',
@@ -404,9 +373,7 @@ def annotate_bc(ax_main, ax_right, opt_x, r, panel_label, p68_sub, p68_tot):
                  fontweight='bold', color='#444444', ha='right', va='top',
                  transform=trans, zorder=6)
 
-# ──────────────────────────────────────────────────────────────
 # (b) Building Height
-# ──────────────────────────────────────────────────────────────
 ax = axes[1]
 xb = [r['threshold'] for r in results_bldg]
 
@@ -440,9 +407,7 @@ ax.legend(lines1 + lines2, labs1 + labs2,
 annotate_bc(ax, ax2, opt_thresh_b, results_bldg[opt_idx_b],
             'Building', p68_sub_bldg, p68_total)
 
-# ──────────────────────────────────────────────────────────────
 # (c) ISA
-# ──────────────────────────────────────────────────────────────
 ax = axes[2]
 xc = [r['threshold'] for r in results_isa]
 
@@ -476,7 +441,6 @@ ax.legend(lines1 + lines2, labs1 + labs2,
 annotate_bc(ax, ax2, opt_thresh_c, results_isa[opt_idx_c],
             'ISA%', p68_sub_isa, p68_total)
 
-# ──────────────────────────────────────────────────────────────
 plt.tight_layout()
 plt.savefig('mask_individual_sweeps_v2.png', dpi=300, bbox_inches='tight')
 plt.savefig('mask_individual_sweeps_v2.pdf', bbox_inches='tight')

@@ -242,9 +242,7 @@ def plot_parallel_zone_2x2(df, y_col='abs_error_node',
     2x2 Parallel Zone Analysis (Far & Near ISA)
     """
     
-    print("=" * 70)
     print("Parallel Angle Analysis: 2x2 Plot (Far & Near ISA)")
-    print("=" * 70)
     
     # Prepare data
     required_cols = [y_col, 'flow_angle', 'far_isa', 'far_ratio', 'near_isa', 'near_ratio']
@@ -291,7 +289,7 @@ def plot_parallel_zone_2x2(df, y_col='abs_error_node',
         filepath = OUTPUT_DIR / f"figure6_parallel_zone_2x2.pdf"
         fig.savefig(filepath, dpi=300, facecolor='white', bbox_inches='tight')
 
-        print(f"\n✓ Saved: {filepath}")
+        print(f"\nSaved: {filepath}")
     
     if show:
         plt.show()

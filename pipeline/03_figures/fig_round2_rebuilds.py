@@ -54,7 +54,7 @@ def load_nodes():
     return d.dropna(subset=["e"])
 
 
-# ══════════════════════════════════ fig05 v2
+# fig05 v2
 def fig05():
     ob = pq.read_table(OBS, columns=["reach_id", "time_str", "reach_q_b",
                                      "wse_relative_m", "wse_usgs_relative_m"]).to_pandas()
@@ -120,7 +120,7 @@ def fig05():
     save(fig, "fig05_quality_flags_v2")
 
 
-# ══════════════════════════════════ fig07 2x2
+# fig07 2x2
 def fig07():
     d = load_nodes()
     par = d[d.angle_dev <= 10]
@@ -168,7 +168,7 @@ def fig07():
     save(fig, "fig07_parallel_isa_2x2")
 
 
-# ══════════════════════════════════ fig09 v2
+# fig09 v2
 def fig09():
     d = load_nodes()
     cats = {"All": np.ones(len(d), bool)}
@@ -249,7 +249,7 @@ def fig09():
     save(fig, "fig09_mask_v2")
 
 
-# ══════════════════════════════════ figS1 2 deg bins
+# figS1 2 deg bins
 def figS1():
     d = load_nodes()
     gc = d.sample_geometry_category.astype(str).str.lower()
@@ -277,7 +277,7 @@ def figS1():
     save(fig, "figS1_angle_2deg")
 
 
-# ══════════════════════════════════ figS3 near counterpart
+# figS3 near counterpart
 def figS3():
     d = load_nodes()
     for adeg in (10, 13):

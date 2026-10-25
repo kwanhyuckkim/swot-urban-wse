@@ -252,7 +252,6 @@ def process_fctimp(fctimp_str, spike_threshold=1.0, output_dir=None):
     bounds = polygon.total_bounds
     
     for idx, spike_row in d[d['is_spike']].iterrows():
-        print(f"\n{'='*70}")
         print(f"Spike: {spike_row['time_str']} (error={spike_row['error']:.2f}m)")
         
         normals = d[~d['is_spike']].copy()
@@ -311,7 +310,7 @@ def process_fctimp(fctimp_str, spike_threshold=1.0, output_dir=None):
             save_comparison_plots(normal_data, spike_data, normal_info, spike_info, 
                                   polygon, bounds, output_dir, fctimp_str)
     
-    print(f"\n✓ Done: {output_dir}")
+    print(f"\nDone: {output_dir}")
 
 def match_and_group_pixc(time_str, files, crid, window_minutes=5):
     dt = pd.to_datetime(time_str)

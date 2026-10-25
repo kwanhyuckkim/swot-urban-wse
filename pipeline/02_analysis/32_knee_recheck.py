@@ -14,7 +14,7 @@ df["far_isa_pct"] = df.far_isa * 100 if df.far_isa.max() <= 1.0 else df.far_isa
 abs_err = df.abs_error.values; flow_par = df.flow_angle_parallel.values
 far_bldg = df.far_building.values; far_isa = df.far_isa_pct.values
 print(f"rows {len(df):,} | NaN: error {np.isnan(abs_err).sum():,}, building {np.isnan(far_bldg).sum():,}, isa {np.isnan(far_isa).sum():,}")
-print(f"parallel: flow_par < 13 → {(flow_par < OPT_A).sum():,} | <= 13 → {(flow_par <= OPT_A).sum():,} | exactly 13.0 → {(flow_par == OPT_A).sum():,}")
+print(f"parallel: flow_par < 13 -> {(flow_par < OPT_A).sum():,} | <= 13 -> {(flow_par <= OPT_A).sum():,} | exactly 13.0 -> {(flow_par == OPT_A).sum():,}")
 def sweep(label, pop, var, ths, unit, show=True):
     n_sub = int(pop.sum()); p68_sub = np.quantile(abs_err[pop], 0.68); res = []
     for t in ths:

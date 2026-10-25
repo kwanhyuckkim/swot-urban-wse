@@ -76,7 +76,7 @@ def get_building_bins_dynamic(data, building_col, min_samples=100, start_from=5,
         if remaining >= min_samples:
             valid_edges.append(edge)
         else:
-            print(f"  → Stopping: {edge}m 이상 남은 샘플 {remaining} < {min_samples}")
+            print(f"  -> Stopping: {edge}m 이상 남은 샘플 {remaining} < {min_samples}")
             break
     
     valid_edges.append(np.inf)
@@ -110,13 +110,9 @@ def plot_grouped_boxplot_combined(df,
     Row 2: X = ISA, Color = Building Height (Greens)
     """
     
-    print("=" * 70)
     print("COMBINED GROUPED BOXPLOT")
-    print("=" * 70)
     
-    # ==========================================================================
     # Filter to Parallel zone only
-    # ==========================================================================
     df_parallel = df[df['flow_angle'].apply(get_flow_angle_zone) == 'Parallel'].copy()
     print(f"\n[Data] Parallel zone: {len(df_parallel):,} / {len(df):,}")
     
@@ -124,9 +120,7 @@ def plot_grouped_boxplot_combined(df,
     data = df_parallel[[isa_col, building_col, error_col]].dropna()
     print(f"[Data] After dropna: {len(data):,}")
     
-    # ==========================================================================
     # Define bins
-    # ==========================================================================
     
     isa_bin_order = ['0-5', '5-10', '10-20', '20-30', '30-45', '45-60', 
                      '60+']
@@ -151,9 +145,7 @@ def plot_grouped_boxplot_combined(df,
     existing_isa_bins = [b for b in isa_bin_order if b in data['isa_bin'].values]
     isa_labels_with_n = [f'{lbl}\n(n={isa_counts.get(lbl, 0):,})' for lbl in existing_isa_bins]
     
-    # ==========================================================================
     # Colors
-    # ==========================================================================
     import matplotlib.cm as cm
     
     cmap_isa = cm.get_cmap('Oranges', n_isa_bins + 2)
@@ -162,14 +154,10 @@ def plot_grouped_boxplot_combined(df,
     cmap_building = cm.get_cmap('Purples', n_building_bins + 2)
     colors_building = [cmap_building(i + 2) for i in range(n_building_bins)]
     
-    # ==========================================================================
     # Create figure
-    # ==========================================================================
     fig, axes = plt.subplots(2, 1, figsize=figsize, facecolor='white')
     
-    # ==========================================================================
     # Row 1: X = Building Height, Color = ISA (Reds)
-    # ==========================================================================
     ax1 = axes[0]
     ax1.set_facecolor('white')
     
@@ -268,9 +256,7 @@ def plot_grouped_boxplot_combined(df,
                title_fontsize=12,
                fontsize=10)
     
-    # ==========================================================================
     # Row 2: X = ISA, Color = Building Height (Greens)
-    # ==========================================================================
     ax2 = axes[1]
     ax2.set_facecolor('white')
     
@@ -366,25 +352,21 @@ def plot_grouped_boxplot_combined(df,
                title_fontsize=12,
                fontsize=10)
     
-    # ==========================================================================
     # Main title and layout
-    # ==========================================================================
     fig.suptitle('Parallel Angle X Far Zone Analysis - ISA & Building Height', 
                  fontsize=18, fontweight='bold', y=0.98)
     
     plt.tight_layout(rect=[0, 0, 0.88, 0.96])
     
-    # ==========================================================================
     # Save
-    # ==========================================================================
     if save:
         filepath = OUTPUT_DIR / "figure7_grouped_boxplot_combined.png"
         fig.savefig(filepath, dpi=300, facecolor='white', bbox_inches='tight')
-        print(f"\n✓ Saved: {filepath}")
+        print(f"\nSaved: {filepath}")
         
         filepath = OUTPUT_DIR / "figure7_grouped_boxplot_combined.pdf"
         fig.savefig(filepath, dpi=300, facecolor='white', bbox_inches='tight')
-        print(f"✓ Saved: {filepath}")
+        print(f"Saved: {filepath}")
     
     if show:
         plt.show()

@@ -13,9 +13,7 @@ from shapely.geometry import Point
 from datetime import datetime, timedelta
 import re
 
-# ============================================================================
 # Helper functions
-# ============================================================================
 
 def filter_best_pixc_files(files):
     file_dict = {}
@@ -151,9 +149,7 @@ def extract_pixels_with_vec(pixc_file, pixcvec_file, polygon_gdf):
     return result
 
 
-# ============================================================================
 # Constants
-# ============================================================================
 
 CLASSIFICATION_COLORS = [
     'maroon', 'gold', 'skyblue', 'mediumblue', 'dimgray', 'cyan', 'darkturquoise'
@@ -330,9 +326,7 @@ def draw_satellite_swath_lonlat(ax, side, heading, cycle_id, pass_id, tile_id,
                 color=text_color, ha='center', va='bottom', zorder=5)
 
 
-# ============================================================================
 # Main function
-# ============================================================================
 
 def process_fctimp(fctimp_str, spike_threshold=0.1832, output_dir=None, year=2025):
     if output_dir is None:
@@ -375,7 +369,6 @@ def process_fctimp(fctimp_str, spike_threshold=0.1832, output_dir=None, year=202
     nlcd_path = '/work/pi_kandread_umass_edu/swot-urban/0_data_collection/1_nlcd/Annual_NLCD_LndCov_2024_CU_C1V1_EPSG4326.tif'
     
     for idx, spike_row in d[d['is_spike']].iterrows():
-        print(f"\n{'='*70}")
         print(f"High Error: {spike_row['time_str']} (error={spike_row['error']:.2f}m)")
         
         normals = d[~d['is_spike']].copy()
@@ -434,16 +427,14 @@ def process_fctimp(fctimp_str, spike_threshold=0.1832, output_dir=None, year=202
                                  polygon, bounds, output_dir, fctimp_str, nlcd_path)
         else:
             if not normal_data:
-                print("  → Could not extract Low Error data")
+                print("  -> Could not extract Low Error data")
             if not spike_data:
-                print("  → Could not extract High Error data")
+                print("  -> Could not extract High Error data")
     
-    print(f"\n✓ Done: {output_dir}")
+    print(f"\nDone: {output_dir}")
 
 
-# ============================================================================
 # Plot function
-# ============================================================================
 
 def save_comparison_plot(normal_data, spike_data, normal_info, spike_info, polygon, bounds, output_dir, fctimp_str, nlcd_path):
     time_str = spike_info['time_str']
@@ -478,9 +469,7 @@ def save_comparison_plot(normal_data, spike_data, normal_info, spike_info, polyg
         range_min, range_max = np.nanmin(data['range'][sel]), np.nanmax(data['range'][sel])
         az_min, az_max = np.nanmin(data['azimuth'][sel]), np.nanmax(data['azimuth'][sel])
         
-        # =====================================================================
         # Left: SWOT Classification - 위성 shading 없이, Range 확장 없이
-        # =====================================================================
         ax1 = fig.add_subplot(gs[row, 0])
         
         if sel.sum() > 0:
@@ -508,9 +497,7 @@ def save_comparison_plot(normal_data, spike_data, normal_info, spike_info, polyg
         
         # 위성 shading 안 그림!
         
-        # =====================================================================
         # Right: NLCD Land Cover
-        # =====================================================================
         ax2 = fig.add_subplot(gs[row, 1])
         
         buffer = 0.008
@@ -569,9 +556,7 @@ def save_comparison_plot(normal_data, spike_data, normal_info, spike_info, polyg
                                      plot_lon_min, plot_lon_max, plot_lat_min, plot_lat_max, 
                                      BAND_WIDTH_LON, text_color='white')
     
-    # =========================================================================
     # Legends
-    # =========================================================================
     ax_leg1 = fig.add_subplot(gs[2, 0])
     ax_leg1.axis('off')
     pixc_legend = [Patch(facecolor=CLASSIFICATION_COLORS[i], edgecolor='black',
@@ -594,7 +579,7 @@ def save_comparison_plot(normal_data, spike_data, normal_info, spike_info, polyg
     
     save_path = f'{output_dir}/figure4_COMPARE_ISA{fctimp_str}_{time_str}.png'
     plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
-    print(f"  ✓ Saved: {save_path}")
+    print(f"  Saved: {save_path}")
     plt.close()
 
 # 실행
