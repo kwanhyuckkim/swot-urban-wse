@@ -18,4 +18,3 @@ conda activate /work/kwanhyuckkim_umass_edu/.conda/envs/swot-urban
 python 02_nearfar_pipeline_byreach.py
 
 echo "Job finished: $(date)"
-echo "=========================================="
