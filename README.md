@@ -11,8 +11,8 @@ I matched SWOT river node WSE with USGS gauges on urban reaches and looked at ho
 The code is split by step:
 
 - `pipeline/01_download`: SWORD reach buffers with NLCD land cover, USGS gage heights and their conversion to EGM2008, Hydrocron reach and node data, and the PIXC, PIXCVec and TVP downloads
-- `pipeline/02_analysis`: site selection and gauge matchups, the near/far-nadir sampling of impervious surface and building height, the geometry and flow-angle analysis, and an exploratory QRF correction of the WSE error
-- `pipeline/03_figures`: notebooks for the figures in the paper, plus plotting cells pulled out of them (`cell_*.py`)
+- `pipeline/02_analysis`: site selection and gauge matchups, the near/far-nadir sampling of impervious surface and building height, the geometry and flow-angle analysis, and the extra checks I ran for the revision
+- `pipeline/03_figures`: scripts and notebooks for the figures, numbered as in the revised manuscript
 
 The notebooks have their outputs cleared, and the data and result files are not in the repo.
 
