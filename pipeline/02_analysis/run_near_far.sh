@@ -9,16 +9,13 @@
 #SBATCH -o nearfarg-%j.out
 #SBATCH -e nearfarg-%j.err
 
-echo "=========================================="
 echo "Job started: $(date)"
 echo "Node: $(hostname)"
-echo "=========================================="
 
 module load conda/latest
 conda activate /work/kwanhyuckkim_umass_edu/.conda/envs/swot-urban
 
-python swot_nearfar_analysis_byReach.py
+python 02_nearfar_pipeline_byreach.py
 
-echo "=========================================="
 echo "Job finished: $(date)"
 echo "=========================================="
